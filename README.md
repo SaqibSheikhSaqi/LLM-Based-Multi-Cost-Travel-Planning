@@ -136,13 +136,6 @@ Includes:
 
 ## Usage
 
-1. Download dataset from Kaggle  
-2. Open notebook in Google Colab or Jupyter  
-3. Run all cells sequentially  
-
----
-## Usage
-
 1. Download dataset  
 2. Open notebook in Colab/Jupyter  
 3. Run all cells  

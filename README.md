@@ -1,77 +1,97 @@
-# Traveler Trip Cost Prediction with and without SIS
+# Traveler Trip Cost Prediction with Seasonal Intensity Score (SIS) and LLM-Based Decision Support
 
 ## Overview
 
 **TravelerTripDatasetwithSIS.ipynb** contains the implementation with the proposed **Seasonal Intensity Score (SIS)** feature.  
-SIS is computed using **only the training data** to ensure a **leakage-free framework**, capturing seasonal variations in travel cost across destinations and months.
+SIS is computed strictly using **training data only**, ensuring a **leakage-free learning framework** while capturing seasonal variations across destinations and months.
 
-**TravelerTripDatasetwithOutSIS.ipynb** contains the baseline implementation **without SIS** for comparison.
+**TravelerTripDatasetwithOutSIS.ipynb** contains the baseline implementation **without SIS**, used for comparative evaluation.
 
-Experimental results show that the model **with SIS performs better** in capturing seasonal patterns and improving predictive performance, particularly in explainability and decision-support scenarios.
+Experimental analysis demonstrates that incorporating SIS enhances:
+- seasonal pattern learning  
+- interpretability  
+- decision-support capability  
 
 ---
 
 ## Dataset
 
-The dataset used in this study is publicly available on Kaggle:
+The dataset used in this study is publicly available:
 
 🔗 https://www.kaggle.com/datasets/rkiattisak/traveler-trip-data
 
-It includes features such as:
-- Destination
-- Duration
-- Traveler demographics
-- Accommodation type
-- Transportation type
-- Month
-- Cost variables (Accommodation, Transportation, Total)
+### Dataset Features
+
+- Destination  
+- Duration (days)  
+- Traveler age, gender, nationality  
+- Accommodation type  
+- Transportation type  
+- Month  
+- Accommodation cost  
+- Transportation cost  
+- Total cost  
 
 ---
 
-## Key Contribution
+## Key Contributions
 
 - Introduction of **Seasonal Intensity Score (SIS)**  
-- Leakage-safe feature engineering  
+- Leakage-safe feature engineering (train-only computation)  
 - Multi-target prediction:
-  - Accommodation Cost
-  - Transportation Cost
+  - Accommodation Cost  
+  - Transportation Cost  
   - Total Cost  
-- Explainable AI using counterfactual analysis  
-- Comparative evaluation (with vs without SIS)
+- Counterfactual explainability framework  
+- Integration of **LLM-based decision support layer**  
 
 ---
 
-## Results Summary
+## Seasonal Intensity Score (SIS)
 
-- SIS improves **seasonal awareness** of the model  
-- Enhances **interpretability and decision-making**  
-- Provides **more realistic and stable predictions**  
+SIS captures seasonal demand variation:
 
----
+\[
+SIS(d, m) = \frac{\mu_{d,m}^{train}}{\mu_d^{train}}
+\]
 
-## Files
+Where:
+- \( \mu_{d,m}^{train} \): mean accommodation cost for destination *d* in month *m* (training only)  
+- \( \mu_d^{train} \): mean accommodation cost for destination *d* across all months  
 
-- `TravelerTripDatasetwithSIS.ipynb` → Model with SIS  
-- `TravelerTripDatasetwithOutSIS.ipynb` → Model without SIS  
+### Interpretation
 
----
+- SIS > 1 → Peak season  
+- SIS ≈ 1 → Normal conditions  
+- SIS < 1 → Off-peak  
 
-## Usage
+### Leakage Safety
 
-1. Download dataset from Kaggle  
-2. Open notebook in Google Colab or Jupyter  
-3. Run all cells sequentially  
-
----
-
-## Notes
-
-- SIS is computed **only from training data** to avoid data leakage  
-- Counterfactual explanations are included for decision support  
-- Suitable for research in **AI-driven travel cost optimization**
+- Computed **only on training split**
+- Applied to test data using:
+  - destination fallback  
+  - month fallback  
+  - default value = 1.0  
 
 ---
 
-## License
+## Data Augmentation Strategy
 
-This project is for academic and research purposes.
+To improve robustness, a controlled augmentation strategy is applied:
+
+- Synthetic expansion using:
+  - **inflation trend simulation**
+  - **low Gaussian noise (≈3%)**
+- Maintains:
+  - statistical consistency  
+  - real-world cost patterns  
+
+This approach increases dataset size without introducing unrealistic patterns.
+
+---
+
+## 🤖 LLM-Based Decision Support
+
+A lightweight reasoning layer converts predictions into actionable insights.
+
+### Example Output

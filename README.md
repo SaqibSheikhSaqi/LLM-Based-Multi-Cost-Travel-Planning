@@ -3,12 +3,12 @@
 ## Overview
 
 **TravelerTripDatasetwithSIS.ipynb** contains the implementation with the proposed **Seasonal Intensity Score (SIS)** feature.  
-SIS is computed strictly using **training data only**, ensuring a **leakage-free learning framework** while capturing seasonal variations across destinations and months.
+SIS is computed using **training data only**, ensuring a **leakage-free framework**.
 
-**TravelerTripDatasetwithOutSIS.ipynb** contains the baseline implementation **without SIS**, used for comparative evaluation.
+**TravelerTripDatasetwithOutSIS.ipynb** contains the baseline implementation **without SIS**.
 
-Experimental analysis demonstrates that incorporating SIS enhances:
-- seasonal pattern learning  
+The model with SIS improves:
+- seasonal understanding  
 - interpretability  
 - decision-support capability  
 
@@ -16,82 +16,160 @@ Experimental analysis demonstrates that incorporating SIS enhances:
 
 ## Dataset
 
-The dataset used in this study is publicly available:
-
-🔗 https://www.kaggle.com/datasets/rkiattisak/traveler-trip-data
-
-### Dataset Features
-
-- Destination  
-- Duration (days)  
-- Traveler age, gender, nationality  
-- Accommodation type  
-- Transportation type  
-- Month  
-- Accommodation cost  
-- Transportation cost  
-- Total cost  
+Dataset link:  
+https://www.kaggle.com/datasets/rkiattisak/traveler-trip-data
 
 ---
 
 ## Key Contributions
 
-- Introduction of **Seasonal Intensity Score (SIS)**  
-- Leakage-safe feature engineering (train-only computation)  
-- Multi-target prediction:
-  - Accommodation Cost  
-  - Transportation Cost  
-  - Total Cost  
-- Counterfactual explainability framework  
-- Integration of **LLM-based decision support layer**  
+- Seasonal Intensity Score (SIS)  
+- Leakage-safe feature engineering  
+- Multi-target prediction  
+- Counterfactual explainability  
+- LLM-based decision support  
 
 ---
 
 ## Seasonal Intensity Score (SIS)
 
-SIS captures seasonal demand variation:
-
-\[
-SIS(d, m) = \frac{\mu_{d,m}^{train}}{\mu_d^{train}}
-\]
-
+SIS is defined as:
+SIS(d, m) = Mean_Accommodation_Cost(d, m) / Mean_Accommodation_Cost(d)
 Where:
-- \( \mu_{d,m}^{train} \): mean accommodation cost for destination *d* in month *m* (training only)  
-- \( \mu_d^{train} \): mean accommodation cost for destination *d* across all months  
+- Mean_Accommodation_Cost(d, m) → cost for destination *d* in month *m* (training only)  
+- Mean_Accommodation_Cost(d) → overall destination cost (training only)  
 
 ### Interpretation
 
 - SIS > 1 → Peak season  
-- SIS ≈ 1 → Normal conditions  
+- SIS ≈ 1 → Normal  
 - SIS < 1 → Off-peak  
 
-### Leakage Safety
+---
 
-- Computed **only on training split**
-- Applied to test data using:
-  - destination fallback  
-  - month fallback  
-  - default value = 1.0  
+## Data Augmentation
+
+To improve robustness:
+
+- Inflation-based scaling  
+- Controlled Gaussian noise (~3%)  
+- Synthetic data expansion  
+
+This preserves realistic patterns while increasing dataset size.
 
 ---
 
-## Data Augmentation Strategy
+## LLM-Based Decision Support
 
-To improve robustness, a controlled augmentation strategy is applied:
+The system converts predictions into human-readable decisions:
+### LLM-Based Decision Output
 
-- Synthetic expansion using:
-  - **inflation trend simulation**
-  - **low Gaussian noise (≈3%)**
-- Maintains:
-  - statistical consistency  
-  - real-world cost patterns  
+**Drivers**
+- Hotel accommodation choice  
+- Trip duration  
+- Transportation cost  
 
-This approach increases dataset size without introducing unrealistic patterns.
+**Suggestions**
+- Choose budget accommodation options  
+- Optimize travel duration  
+- Use economical transport alternatives  
+
+**Plan**
+- Select affordable lodging and adjust trip schedule  
+
+**Decision**
+- Modify  
+
+**Confidence**
+- Medium
+
+### Purpose
+
+- Improves interpretability  
+- Supports user decisions  
+- Bridges ML output → real-world actions  
 
 ---
 
-## 🤖 LLM-Based Decision Support
+## Model
 
-A lightweight reasoning layer converts predictions into actionable insights.
+- Algorithm: Random Forest Regressor  
+- Separate models for:
+  - Accommodation Cost  
+  - Transportation Cost  
+  - Total Cost  
 
-### Example Output
+---
+
+## Results Summary
+
+### With SIS
+- Better seasonal modeling  
+- More stable predictions  
+- Higher interpretability  
+
+### Without SIS
+- Sometimes higher raw accuracy  
+- Poor seasonal understanding  
+- Less explainable  
+
+---
+
+## Explainability
+
+Includes:
+
+- Counterfactual analysis  
+- Error categorization  
+
+---
+
+## Repository Structure
+
+---
+## Files
+
+- `TravelerTripDatasetwithSIS.ipynb` → Model with SIS  
+- `TravelerTripDatasetwithOutSIS.ipynb` → Model without SIS  
+
+---
+
+## Usage
+
+1. Download dataset from Kaggle  
+2. Open notebook in Google Colab or Jupyter  
+3. Run all cells sequentially  
+
+---
+## Usage
+
+1. Download dataset  
+2. Open notebook in Colab/Jupyter  
+3. Run all cells  
+
+---
+
+## Notes
+
+- SIS is computed only from training data (no leakage)  
+- Augmentation applied after feature engineering  
+- Designed for research + decision support  
+
+---
+
+## Conclusion
+
+This framework combines:
+
+- Feature engineering (SIS)  
+- Machine learning  
+- Explainable AI  
+- LLM-based reasoning  
+
+to build a **practical and interpretable travel cost prediction system**.
+
+---
+
+## License
+
+For academic and research use only.
